@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onyx Kitchen — Модульные кухни в Москве</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--dark:#1a1a1a;--gold:#c8a96e;--gray:#888;--card:#222;--border:rgba(200,169,110,0.2)}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--dark);color:#fff}
+
+/* HEADER */
+header{position:fixed;top:0;left:0;right:0;background:rgba(26,26,26,0.96);backdrop-filter:blur(10px);z-index:1000;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.logo{font-size:22px;font-weight:700;letter-spacing:4px;color:var(--gold)}
+nav a{color:#ccc;text-decoration:none;margin-left:28px;font-size:13px;letter-spacing:1px;transition:color .3s}
+nav a:hover{color:var(--gold)}
+
+/* HERO */
+.hero{height:100vh;background:linear-gradient(135deg,#111 0%,#2a2a2a 50%,#111 100%);display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(200,169,110,.12) 0%,transparent 70%)}
+.hero-content{position:relative;z-index:1}
+.hero h1{font-size:62px;font-weight:300;letter-spacing:10px;margin-bottom:12px}
+.hero h1 span{color:var(--gold);font-weight:700}
+.hero p{font-size:15px;color:var(--gray);letter-spacing:4px;margin-bottom:45px}
+.hero-btn{display:inline-block;padding:14px 44px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;letter-spacing:3px;font-size:13px;transition:all .3s}
+.hero-btn:hover{background:var(--gold);color:#111}
+
+/* SECTIONS */
+.wrap{max-width:1380px;margin:0 auto;padding:80px 40px}
+.sec-title{text-align:center;margin-bottom:55px}
+.sec-title h2{font-size:34px;font-weight:300;letter-spacing:6px}
+.sec-title h2 span{color:var(--gold)}
+.sec-title p{color:var(--gray);font-size:13px;letter-spacing:3px;margin-top:8px}
+.divider{width:55px;height:1px;background:var(--gold);margin:18px auto}
+
+/* FILTERS */
+.filters{display:flex;justify-content:center;gap:12px;margin-bottom:50px;flex-wrap:wrap}
+.fbtn{padding:10px 28px;border:1px solid rgba(200,169,110,.35);background:transparent;color:var(--gray);cursor:pointer;letter-spacing:2px;font-size:12px;transition:all .3s}
+.fbtn:hover,.fbtn.active{border-color:var(--gold);color:var(--gold);background:rgba(200,169,110,.08)}
+
+/* COLLECTION BLOCK */
+.col-block{margin-bottom:75px}
+.col-head{padding-bottom:28px;margin-bottom:35px;border-bottom:1px solid var(--border)}
+.col-head h3{font-size:26px;font-weight:300;letter-spacing:5px;color:var(--gold);margin-bottom:18px}
+.col-specs{list-style:none;display:flex;flex-wrap:wrap;gap:8px 30px}
+.col-specs li{color:var(--gray);font-size:13px;letter-spacing:1px;padding-left:14px;position:relative}
+.col-specs li::before{content:'—';position:absolute;left:0;color:var(--gold)}
+
+/* MATERIAL NOTE */
+.mat-note{background:rgba(200,169,110,.05);border-left:2px solid var(--gold);padding:14px 20px;margin-bottom:14px;font-size:12px;color:var(--gray);letter-spacing:1px;line-height:1.7}
+.mat-note strong{color:var(--gold);display:block;margin-bottom:4px;font-size:13px}
+
+/* COLOR GRID */
+.color-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:24px}
+.c-card{background:var(--card);cursor:pointer;transition:transform .3s,border-color .3s;border:1px solid transparent;overflow:hidden}
+.c-card:hover{transform:translateY(-5px);border-color:rgba(200,169,110,.35)}
+.c-imgs{display:grid;grid-template-columns:1fr 1fr;gap:2px;height:215px;background:#111}
+.c-imgs.solo{grid-template-columns:1fr}
+.c-imgs img{width:100%;height:100%;object-fit:cover;display:block}
+.c-info{padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+.c-name{font-size:13px;letter-spacing:2px;color:#fff}
+.c-tags{display:flex;gap:6px}
+.c-tag{font-size:10px;letter-spacing:1px;color:var(--gray);border:1px solid rgba(136,136,136,.3);padding:3px 7px}
+
+/* ABOUT */
+.about-bg{background:#111}
+.about-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:35px}
+.a-item{padding:40px 25px;text-align:center;border:1px solid var(--border);transition:border-color .3s}
+.a-item:hover{border-color:rgba(200,169,110,.5)}
+.a-icon{font-size:38px;margin-bottom:18px}
+.a-item h4{color:var(--gold);letter-spacing:2px;margin-bottom:10px;font-size:14px;font-weight:400}
+.a-item p{color:var(--gray);font-size:13px;line-height:1.8}
+
+/* CONTACT */
+.contact-center{text-align:center;padding-top:10px}
+.c-loc{display:inline-flex;align-items:center;gap:10px;font-size:18px;letter-spacing:3px;color:#ccc;margin-bottom:14px}
+.c-loc span{color:var(--gold);font-size:22px}
+.c-note{color:rgba(136,136,136,.5);font-size:12px;letter-spacing:2px}
+
+/* FOOTER */
+footer{background:#0f0f0f;text-align:center;padding:28px;color:var(--gray);font-size:12px;letter-spacing:2px;border-top:1px solid var(--border)}
+footer b{color:var(--gold)}
+
+/* LIGHTBOX */
+.lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:9999;align-items:center;justify-content:center}
+.lb.on{display:flex}
+.lb-inner{position:relative;max-width:92vw}
+.lb-close{position:absolute;top:-38px;right:0;background:none;border:none;color:var(--gold);font-size:28px;cursor:pointer;line-height:1}
+.lb-title{text-align:center;color:var(--gold);letter-spacing:3px;font-size:15px;margin-bottom:14px}
+.lb-imgs{display:flex;gap:10px;max-height:82vh;justify-content:center}
+.lb-imgs img{max-height:82vh;max-width:44vw;object-fit:contain}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  header{padding:14px 18px}
+  nav a{margin-left:14px;font-size:11px}
+  .hero h1{font-size:34px;letter-spacing:5px}
+  .wrap{padding:55px 18px}
+  .color-grid{grid-template-columns:1fr 1fr}
+  .about-grid{grid-template-columns:1fr}
+  .lb-imgs{flex-direction:column}
+  .lb-imgs img{max-width:88vw;max-height:38vh}
+}
+@media(max-width:480px){
+  .color-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">ONYX KITCHEN</div>
+  <nav>
+    <a href="#catalog">Каталог</a>
+    <a href="#about">О нас</a>
+    <a href="#contact">Контакты</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <h1>ONYX <span>KITCHEN</span></h1>
+    <p>МОДУЛЬНЫЕ КУХНИ · МОСКВА</p>
+    <a href="#catalog" class="hero-btn">СМОТРЕТЬ КАТАЛОГ</a>
+  </div>
+</div>
+
+<!-- ===== CATALOG ===== -->
+<div class="wrap" id="catalog">
+  <div class="sec-title">
+    <h2>КАТАЛОГ <span>КОЛЛЕКЦИЙ</span></h2>
+    <div class="divider"></div>
+    <p>ВЫБЕРИТЕ КОЛЛЕКЦИЮ ДЛЯ ВАШЕГО ИНТЕРЬЕРА</p>
+  </div>
+
+  <!-- ФИЛЬТРЫ -->
+  <div class="filters">
+    <button class="fbtn active" onclick="filter('all',this)">ВСЕ</button>
+    <button class="fbtn" onclick="filter('lain',this)">ЛАЙН</button>
+    <button class="fbtn" onclick="filter('klassika',this)">КЛАССИКА</button>
+    <button class="fbtn" onclick="filter('loft',this)">ЛОФТ</button>
+    <button class="fbtn" onclick="filter('standart',this)">СТАНДАРТ</button>
+  </div>
+
+  <!-- ===== ЛАЙН ===== -->
+  <div class="col-block" data-col="lain">
+    <div class="col-head">
+      <h3>КОЛЛЕКЦИЯ ЛАЙН</h3>
+      <ul class="col-specs">
+        <li>МДФ ПВХ 16 мм</li>
+        <li>Единое полотно ПВХ плёнки спереди и по краям фасада</li>
+        <li>Фасад с рифлением</li>
+        <li>Ручки в комплект не входят</li>
+      </ul>
+    </div>
+    <div class="color-grid">
+
+      <!-- Агат -->
+      <div class="c-card" onclick="lb('ЛАЙН — АГАТ','images/агат рендер.png','images/лайн агат фасад.png')">
+        <div class="c-imgs">
+          <img src="images/агат рендер.png" alt="Лайн Агат рендер">
+          <img src="images/лайн агат фасад.png" alt="Лайн Агат фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">АГАТ</span>
+          <div class="c-tags"><span class="c-tag">РЕНДЕР</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+      <!-- Антрацит -->
+      <div class="c-card" onclick="lb('ЛАЙН — АНТРАЦИТ','images/антрацит рендер.png','images/атнраци лайн фасад.png')">
+        <div class="c-imgs">
+          <img src="images/антрацит рендер.png" alt="Лайн Антрацит рендер">
+          <img src="images/атнраци лайн фасад.png" alt="Лайн Антрацит фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">АНТРАЦИТ</span>
+          <div class="c-tags"><span class="c-tag">РЕНДЕР</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+      <!-- Белый -->
+      <div class="c-card" onclick="lb('ЛАЙН — БЕЛЫЙ','images/белый рендер классика.png','images/лайн белый фасад.png')">
+        <div class="c-imgs">
+          <img src="images/белый рендер классика.png" alt="Лайн Белый рендер">
+          <img src="images/лайн белый фасад.png" alt="Лайн Белый фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">БЕЛЫЙ</span>
+          <div class="c-tags"><span class="c-tag">РЕНДЕР</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+      <!-- Дуб песочный -->
+      <div class="c-card" onclick="lb('ЛАЙН — ДУБ ПЕСОЧНЫЙ','images/дуб песочный рендер.png','images/дуб перочный лайн фасад.png')">
+        <div class="c-imgs">
+          <img src="images/дуб песочный рендер.png" alt="Лайн Дуб песочный рендер">
+          <img src="images/дуб перочный лайн фасад.png" alt="Лайн Дуб песочный фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">ДУБ ПЕСОЧНЫЙ</span>
+          <div class="c-tags"><span class="c-tag">РЕНДЕР</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /ЛАЙН -->
+
+  <!-- ===== КЛАССИКА ===== -->
+  <div class="col-block" data-col="klassika">
+    <div class="col-head">
+      <h3>КОЛЛЕКЦИЯ КЛАССИКА</h3>
+      <ul class="col-specs">
+        <li>Гладкие фасады</li>
+        <li>МДФ ПВХ 16 мм</li>
+        <li>Единое полотно ПВХ плёнки спереди и по краям фасада</li>
+        <li>Ручки в комплект не входят</li>
+      </ul>
+    </div>
+    <div class="color-grid">
+
+      <!-- Агат -->
+      <div class="c-card" onclick="lb('КЛАССИКА — АГАТ','images/агат кухня.png','images/агат фасад.png')">
+        <div class="c-imgs">
+          <img src="images/агат кухня.png" alt="Классика Агат кухня">
+          <img src="images/агат фасад.png" alt="Классика Агат фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">АГАТ</span>
+          <div class="c-tags"><span class="c-tag">КУХНЯ</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+      <!-- Антрацит -->
+      <div class="c-card" onclick="lb('КЛАССИКА — АНТРАЦИТ','images/антрацит Кухня.png','images/антрацит фасад.png')">
+        <div class="c-imgs">
+          <img src="images/антрацит Кухня.png" alt="Классика Антрацит кухня">
+          <img src="images/антрацит фасад.png" alt="Классика Антрацит фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">АНТРАЦИТ</span>
+          <div class="c-tags"><span class="c-tag">КУХНЯ</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+      <!-- Белый -->
+      <div class="c-card" onclick="lb('КЛАССИКА — БЕЛЫЙ','images/белый Кухня.png','images/классика белый фасад.png')">
+        <div class="c-imgs">
+          <img src="images/белый Кухня.png" alt="Классика Белый кухня">
+          <img src="images/классика белый фасад.png" alt="Классика Белый фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">БЕЛЫЙ</span>
+          <div class="c-tags"><span class="c-tag">КУХНЯ</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+      <!-- Дуб песочный -->
+      <div class="c-card" onclick="lb('КЛАССИКА — ДУБ ПЕСОЧНЫЙ','images/дуб песочный кухня.png','images/дуб песочный фасад.png')">
+        <div class="c-imgs">
+          <img src="images/дуб песочный кухня.png" alt="Классика Дуб песочный кухня">
+          <img src="images/дуб песочный фасад.png" alt="Классика Дуб песочный фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">ДУБ ПЕСОЧНЫЙ</span>
+          <div class="c-tags"><span class="c-tag">КУХНЯ</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /КЛАССИКА -->
+
+  <!-- ===== ЛОФТ ===== -->
+  <div class="col-block" data-col="loft">
+    <div class="col-head">
+      <h3>КОЛЛЕКЦИЯ ЛОФТ</h3>
+      <ul class="col-specs">
+        <li>МДФ ПВХ 19 мм</li>
+        <li>Фрезеровка, толщина рамки 6 мм</li>
+        <li>Ручки в комплект не входят</li>
+      </ul>
+    </div>
+    <div class="color-grid">
+
+      <!-- Аквамарин -->
+      <div class="c-card" onclick="lb('ЛОФТ — АКВАМАРИН','images/аквамарин рендер.png','images/аквамарин фасад.png')">
+        <div class="c-imgs">
+          <img src="images/аквамарин рендер.png" alt="Лофт Аквамарин рендер">
+          <img src="images/аквамарин фасад.png" alt="Лофт Аквамарин фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">АКВАМАРИН</span>
+          <div class="c-tags"><span class="c-tag">РЕНДЕР</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+      <!-- Белый -->
+      <div class="c-card" onclick="lb('ЛОФТ — БЕЛЫЙ','images/рендер белого лофта.png','images/фасад белого лофта.png')">
+        <div class="c-imgs">
+          <img src="images/рендер белого лофта.png" alt="Лофт Белый рендер">
+          <img src="images/фасад белого лофта.png" alt="Лофт Белый фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">БЕЛЫЙ</span>
+          <div class="c-tags"><span class="c-tag">РЕНДЕР</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+      <!-- Кашемировый -->
+      <div class="c-card" onclick="lb('ЛОФТ — КАШЕМИРОВЫЙ','images/рендер кашемирового лофта.png','images/кашемировый лофт фасад.png')">
+        <div class="c-imgs">
+          <img src="images/рендер кашемирового лофта.png" alt="Лофт Кашемировый рендер">
+          <img src="images/кашемировый лофт фасад.png" alt="Лофт Кашемировый фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">КАШЕМИРОВЫЙ</span>
+          <div class="c-tags"><span class="c-tag">РЕНДЕР</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /ЛОФТ -->
+
+  <!-- ===== СТАНДАРТ ===== -->
+  <div class="col-block" data-col="standart">
+    <div class="col-head">
+      <h3>КОЛЛЕКЦИЯ СТАНДАРТ</h3>
+      <ul class="col-specs">
+        <li>Гладкие фасады</li>
+        <li>Ручки в комплект не входят</li>
+      </ul>
+    </div>
+
+    <div class="mat-note">
+      <strong>ЛДСП 16 мм · Кромка ПВХ 1 мм · PUR-клей</strong>
+      Белый · Кашемир · Светло-серый · Серо-зелёный · Дуб натуральный
+    </div>
+    <div class="mat-note">
+      <strong>ЛМДФ Еггер 16 мм · ПВХ 1 мм · PUR-клей</strong>
+      Дуб Каселла Коричневый · Дуб Каселла Натуральный
+    </div>
+
+    <div class="color-grid">
+
+      <!-- Белый -->
+      <div class="c-card" onclick="lb('СТАНДАРТ — БЕЛЫЙ','images/белый рендер.png','images/стандарт белый фасад.png')">
+        <div class="c-imgs">
+          <img src="images/белый рендер.png" alt="Стандарт Белый рендер">
+          <img src="images/стандарт белый фасад.png" alt="Стандарт Белый фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">БЕЛЫЙ</span>
+          <div class="c-tags"><span class="c-tag">РЕНДЕР</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+      <!-- Кашемир -->
+      <div class="c-card" onclick="lb('СТАНДАРТ — КАШЕМИР','images/кашемир рендер.jpg','images/кашемировый фасад.png')">
+        <div class="c-imgs">
+          <img src="images/кашемир рендер.jpg" alt="Стандарт Кашемир рендер">
+          <img src="images/кашемировый фасад.png" alt="Стандарт Кашемир фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">КАШЕМИР</span>
+          <div class="c-tags"><span class="c-tag">РЕНДЕР</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+      <!-- Светло-серый -->
+      <div class="c-card" onclick="lb('СТАНДАРТ — СВЕТЛО-СЕРЫЙ','images/светло-серый рендер.jpg','images/светло-серый фасад.png')">
+        <div class="c-imgs">
+          <img src="images/светло-серый рендер.jpg" alt="Стандарт Светло-серый рендер">
+          <img src="images/светло-серый фасад.png" alt="Стандарт Светло-серый фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">СВЕТЛО-СЕРЫЙ</span>
+          <div class="c-tags"><span class="c-tag">РЕНДЕР</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+      <!-- Серо-зелёный -->
+      <div class="c-card" onclick="lb('СТАНДАРТ — СЕРО-ЗЕЛЁНЫЙ','images/серо-зеленый рендер.jpg','images/серо-зеленый фасад.png')">
+        <div class="c-imgs">
+          <img src="images/серо-зеленый рендер.jpg" alt="Стандарт Серо-зелёный рендер">
+          <img src="images/серо-зеленый фасад.png" alt="Стандарт Серо-зелёный фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">СЕРО-ЗЕЛЁНЫЙ</span>
+          <div class="c-tags"><span class="c-tag">РЕНДЕР</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+      <!-- Дуб натуральный -->
+      <div class="c-card" onclick="lb('СТАНДАРТ — ДУБ НАТУРАЛЬНЫЙ','images/дуб натуральный рендер.png',null)">
+        <div class="c-imgs solo">
+          <img src="images/дуб натуральный рендер.png" alt="Стандарт Дуб натуральный">
+        </div>
+        <div class="c-info">
+          <span class="c-name">ДУБ НАТУРАЛЬНЫЙ</span>
+          <div class="c-tags"><span class="c-tag">РЕНДЕР</span></div>
+        </div>
+      </div>
+
+      <!-- Дуб Каселла Коричневый -->
+      <div class="c-card" onclick="lb('СТАНДАРТ — ДУБ КАСЕЛЛА КОРИЧНЕВЫЙ','images/дуб каселла коричневый рендер.png','images/дуб каселла коричневый фасад.png')">
+        <div class="c-imgs">
+          <img src="images/дуб каселла коричневый рендер.png" alt="Стандарт Дуб Каселла Коричневый рендер">
+          <img src="images/дуб каселла коричневый фасад.png" alt="Стандарт Дуб Каселла Коричневый фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">ДУБ КАСЕЛЛА КОРИЧНЕВЫЙ</span>
+          <div class="c-tags"><span class="c-tag">РЕНДЕР</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+      <!-- Дуб Каселла Натуральный -->
+      <div class="c-card" onclick="lb('СТАНДАРТ — ДУБ КАСЕЛЛА НАТУРАЛЬНЫЙ','images/дуб каселла натуральный рендер.png','images/дуб каселла натуральный фасад.png')">
+        <div class="c-imgs">
+          <img src="images/дуб каселла натуральный рендер.png" alt="Стандарт Дуб Каселла Натуральный рендер">
+          <img src="images/дуб каселла натуральный фасад.png" alt="Стандарт Дуб Каселла Натуральный фасад">
+        </div>
+        <div class="c-info">
+          <span class="c-name">ДУБ КАСЕЛЛА НАТУРАЛЬНЫЙ</span>
+          <div class="c-tags"><span class="c-tag">РЕНДЕР</span><span class="c-tag">ФАСАД</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /СТАНДАРТ -->
+
+</div><!-- /CATALOG WRAP -->
+
+<!-- ===== О НАС ===== -->
+<div class="about-bg">
+  <div class="wrap" id="about">
+    <div class="sec-title">
+      <h2>ПОЧЕМУ <span>ВЫБИРАЮТ НАС</span></h2>
+      <div class="divider"></div>
+    </div>
+    <div class="about-grid">
+      <div class="a-item">
+        <div class="a-icon">🏭</div>
+        <h4>СОБСТВЕННОЕ ПРОИЗВОДСТВО</h4>
+        <p>Производим модульные кухни с контролем качества на каждом этапе — от материала до готового изделия</p>
+      </div>
+      <div class="a-item">
+        <div class="a-icon">📐</div>
+        <h4>4 КОЛЛЕКЦИИ</h4>
+        <p>Лайн, Классика, Лофт и Стандарт — широкий выбор цветов и материалов для любого интерьера</p>
+      </div>
+      <div class="a-item">
+        <div class="a-icon">✅</div>
+        <h4>КАЧЕСТВО МАТЕРИАЛОВ</h4>
+        <p>МДФ ПВХ, ЛДСП, ЛМДФ Еггер — только проверенные материалы с профессиональным PUR-клеем</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== КОНТАКТЫ ===== -->
+<div class="wrap" id="contact">
+  <div class="sec-title">
+    <h2>КОНТАКТЫ</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="contact-center">
+    <div class="c-loc"><span>📍</span> Москва</div>
+    <p class="c-note">Телефон и мессенджеры — скоро</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <b>ONYX KITCHEN</b> &nbsp;·&nbsp; Модульные кухни &nbsp;·&nbsp; Москва</p>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="LB" onclick="closeLB(event)">
+  <div class="lb-inner">
+    <button class="lb-close" onclick="document.getElementById('LB').classList.remove('on')">✕</button>
+    <div class="lb-title" id="LB-title"></div>
+    <div class="lb-imgs" id="LB-imgs"></div>
+  </div>
+</div>
+
+<script>
+function filter(col, btn){
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.col-block').forEach(bl=>{
+    bl.style.display=(col==='all'||bl.dataset.col===col)?'block':'none';
+  });
+}
+
+function lb(title, img1, img2){
+  document.getElementById('LB-title').textContent = title;
+  const c = document.getElementById('LB-imgs');
+  c.innerHTML='';
+  if(img1){const i=new Image();i.src=img1;i.alt=title;c.appendChild(i);}
+  if(img2){const i=new Image();i.src=img2;i.alt=title+' фасад';c.appendChild(i);}
+  document.getElementById('LB').classList.add('on');
+}
+
+function closeLB(e){
+  if(e.target===document.getElementById('LB'))
+    document.getElementById('LB').classList.remove('on');
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') document.getElementById('LB').classList.remove('on');
+});
+</script>
+</body>
+</html>
