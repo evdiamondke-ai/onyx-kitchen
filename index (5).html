@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onyx Kitchen — Кухни на заказ</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; color: #222; background: #fff; }
+
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 1000;
+    background: rgba(10,10,10,0.92); backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 64px;
+  }
+  .logo { color: #fff; font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+  .logo span { color: #c9a96e; }
+  nav ul { list-style: none; display: flex; gap: 32px; }
+  nav ul a { color: #ccc; text-decoration: none; font-size: 14px; letter-spacing: 1px; transition: color .3s; }
+  nav ul a:hover { color: #c9a96e; }
+
+  .hero { height: 100vh; position: relative; overflow: hidden; }
+  .hero img { width: 100%; height: 100%; object-fit: cover; transition: transform 8s ease; }
+  .hero:hover img { transform: scale(1.05); }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.5) 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; color: #fff;
+  }
+  .hero-overlay h1 { font-size: clamp(32px, 6vw, 72px); font-weight: 300; letter-spacing: 6px; text-transform: uppercase; }
+  .hero-overlay h1 span { color: #c9a96e; font-weight: 700; }
+  .hero-overlay p { margin-top: 16px; font-size: 18px; letter-spacing: 2px; color: #ddd; }
+  .btn-gold {
+    margin-top: 36px; padding: 14px 40px; background: #c9a96e; color: #fff;
+    border: none; font-size: 15px; letter-spacing: 2px; text-transform: uppercase;
+    cursor: pointer; transition: background .3s, transform .2s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-gold:hover { background: #b8924f; transform: translateY(-2px); }
+
+  section { padding: 80px 40px; }
+  .section-title { text-align: center; font-size: 32px; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 12px; }
+  .section-title span { color: #c9a96e; }
+  .section-sub { text-align: center; color: #888; font-size: 15px; margin-bottom: 50px; letter-spacing: 1px; }
+  .divider { width: 60px; height: 2px; background: #c9a96e; margin: 12px auto 40px; }
+
+  .catalog { background: #f8f7f5; }
+  .tabs { display: flex; justify-content: center; gap: 0; margin-bottom: 40px; flex-wrap: wrap; }
+  .tab-btn {
+    padding: 12px 32px; border: 2px solid #c9a96e; background: transparent;
+    color: #c9a96e; font-size: 14px; letter-spacing: 2px; text-transform: uppercase;
+    cursor: pointer; transition: all .3s; margin: 4px;
+  }
+  .tab-btn.active, .tab-btn:hover { background: #c9a96e; color: #fff; }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .cards-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px; max-width: 1200px; margin: 0 auto;
+  }
+  .card {
+    background: #fff; overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: transform .3s, box-shadow .3s; cursor: pointer;
+  }
+  .card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.15); }
+  .card-images { position: relative; height: 220px; overflow: hidden; }
+  .card-images img {
+    width: 100%; height: 100%; object-fit: cover;
+    position: absolute; top: 0; left: 0; transition: opacity .5s;
+  }
+  .card-images .img-render { opacity: 0; }
+  .card:hover .img-fasad { opacity: 0; }
+  .card:hover .img-render { opacity: 1; }
+  .card-label {
+    position: absolute; bottom: 8px; right: 8px;
+    background: rgba(0,0,0,0.6); color: #fff; font-size: 11px;
+    padding: 3px 8px; letter-spacing: 1px; pointer-events: none;
+  }
+  .card-info { padding: 16px 20px; }
+  .card-info h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .card-info p { font-size: 13px; color: #888; }
+
+  .advantages { background: #111; color: #fff; }
+  .advantages .section-title { color: #fff; }
+  .adv-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 32px; max-width: 1100px; margin: 0 auto;
+  }
+  .adv-item { text-align: center; padding: 32px 20px; }
+  .adv-icon { font-size: 42px; margin-bottom: 16px; }
+  .adv-item h3 { font-size: 16px; letter-spacing: 2px; color: #c9a96e; margin-bottom: 10px; text-transform: uppercase; }
+  .adv-item p { font-size: 14px; color: #aaa; line-height: 1.7; }
+
+  .calculator { background: #fff; }
+  .calc-form { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+  .calc-form input, .calc-form select, .calc-form textarea {
+    padding: 14px 18px; border: 1px solid #ddd; font-size: 15px;
+    outline: none; transition: border .3s; font-family: inherit;
+  }
+  .calc-form input:focus, .calc-form select:focus, .calc-form textarea:focus { border-color: #c9a96e; }
+  .calc-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .contacts { background: #f8f7f5; }
+  .contacts-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 32px; max-width: 900px; margin: 0 auto; text-align: center;
+  }
+  .contact-item h3 { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: #c9a96e; margin-bottom: 10px; }
+  .contact-item p { font-size: 15px; color: #444; line-height: 1.8; }
+
+  .float-btns { position: fixed; right: 20px; bottom: 30px; z-index: 999; display: flex; flex-direction: column; gap: 12px; }
+  .float-btn {
+    width: 54px; height: 54px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; text-decoration: none;
+    font-size: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); transition: transform .2s;
+  }
+  .float-btn:hover { transform: scale(1.1); }
+  .float-wa { background: #25D366; }
+  .float-call { background: #c9a96e; }
+
+  footer { background: #0a0a0a; color: #666; text-align: center; padding: 24px 40px; font-size: 13px; letter-spacing: 1px; }
+  footer span { color: #c9a96e; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">ONYX<span>.</span>KITCHEN</div>
+  <ul>
+    <li><a href="#catalog">Каталог</a></li>
+    <li><a href="#advantages">Преимущества</a></li>
+    <li><a href="#calculator">Расчёт стоимости</a></li>
+    <li><a href="#contacts">Контакты</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <img src="foto-glavnya-stranica.png" alt="Onyx Kitchen">
+  <div class="hero-overlay">
+    <h1>ONYX <span>KITCHEN</span></h1>
+    <p>Кухни на заказ — от дизайна до монтажа</p>
+    <a href="#calculator" class="btn-gold">Рассчитать стоимость</a>
+  </div>
+</section>
+
+<!-- CATALOG -->
+<section class="catalog" id="catalog">
+  <h2 class="section-title">НАШ <span>КАТАЛОГ</span></h2>
+  <div class="divider"></div>
+  <p class="section-sub">Наведите на карточку — увидите интерьер кухни</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('layn', this)">Лайн</button>
+    <button class="tab-btn" onclick="showTab('klassika', this)">Классика</button>
+    <button class="tab-btn" onclick="showTab('loft', this)">Лофт</button>
+    <button class="tab-btn" onclick="showTab('standart', this)">Стандарт</button>
+  </div>
+
+  <!-- ЛАЙН -->
+  <div class="tab-content active" id="tab-layn">
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="layn-agat-fasad.png" alt="Лайн Агат фасад">
+          <img class="img-render" src="layn-agat-render.png" alt="Лайн Агат кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Лайн — Агат</h3><p>Матовый фасад, современная геометрия</p></div>
+      </div>
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="layn-antracit-fasad.png" alt="Лайн Антрацит фасад">
+          <img class="img-render" src="layn-antracit-render.png" alt="Лайн Антрацит кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Лайн — Антрацит</h3><p>Тёмный лаконичный стиль</p></div>
+      </div>
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="layn-belyy-fasad.png" alt="Лайн Белый фасад">
+          <img class="img-render" src="layn-belyy-render.png" alt="Лайн Белый кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Лайн — Белый</h3><p>Чистота и простота форм</p></div>
+      </div>
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="layn-dub-peschaniy-fasad.png" alt="Лайн Дуб песчаный фасад">
+          <img class="img-render" src="layn-dub-peschaniy-render.png" alt="Лайн Дуб песчаный кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Лайн — Дуб песчаный</h3><p>Тёплые оттенки натурального дерева</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- КЛАССИКА -->
+  <div class="tab-content" id="tab-klassika">
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="klassika-agat-fasad.png" alt="Классика Агат фасад">
+          <img class="img-render" src="klassika-agat-kukhnya.png" alt="Классика Агат кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Классика — Агат</h3><p>Элегантность и благородство</p></div>
+      </div>
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="klassika-antracit-fasad.png" alt="Классика Антрацит фасад">
+          <img class="img-render" src="klassika-antracit-kukhnya.png" alt="Классика Антрацит кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Классика — Антрацит</h3><p>Классика в тёмных тонах</p></div>
+      </div>
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="klassika-belyy-fasad.png" alt="Классика Белый фасад">
+          <img class="img-render" src="klassika-belyy-kukhnya.png" alt="Классика Белый кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Классика — Белый</h3><p>Вечная классика в белом</p></div>
+      </div>
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="klassika-dub-fasad.png" alt="Классика Дуб фасад">
+          <img class="img-render" src="klassika-dub-kukhnya.png" alt="Классика Дуб кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Классика — Дуб</h3><p>Природная теплота дубового шпона</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ЛОФТ -->
+  <div class="tab-content" id="tab-loft">
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="loft-akvamarin-fasad.png" alt="Лофт Аквамарин фасад">
+          <img class="img-render" src="loft-akvamarin-render.png" alt="Лофт Аквамарин кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Лофт — Аквамарин</h3><p>Индустриальный стиль в морских тонах</p></div>
+      </div>
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="loft-belyy-fasad.png" alt="Лофт Белый фасад">
+          <img class="img-render" src="loft-belyy-render.png" alt="Лофт Белый кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Лофт — Белый</h3><p>Светлый лофт с брутальными деталями</p></div>
+      </div>
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="loft-kashemir-fasad.png" alt="Лофт Кашемир фасад">
+          <img class="img-render" src="loft-kashemir-render.png" alt="Лофт Кашемир кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Лофт — Кашемир</h3><p>Мягкий нейтральный тон в лофт-стиле</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- СТАНДАРТ -->
+  <div class="tab-content" id="tab-standart">
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="standart-belyy-fasad.png" alt="Стандарт Белый фасад">
+          <img class="img-render" src="standart-belyy-render.png" alt="Стандарт Белый кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Стандарт — Белый</h3><p>Практично, стильно, доступно</p></div>
+      </div>
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="standart-dub-kasella-kor-fasad.png" alt="Стандарт Дуб Касела коричневый фасад">
+          <img class="img-render" src="standart-dub-kasella-kor-render.png" alt="Стандарт Дуб Касела коричневый кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Стандарт — Дуб Касела корич.</h3><p>Уютные тёплые оттенки</p></div>
+      </div>
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="standart-dub-kasella-nat-fasad.png" alt="Стандарт Дуб Касела натуральный фасад">
+          <img class="img-render" src="standart-dub-kasella-nat-render.png" alt="Стандарт Дуб Касела натуральный кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Стандарт — Дуб Касела нат.</h3><p>Натуральный светлый дуб</p></div>
+      </div>
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="standart-dub-nat-render.png" alt="Стандарт Дуб натуральный">
+          <img class="img-render" src="standart-dub-nat-render.png" alt="Стандарт Дуб натуральный">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Стандарт — Дуб натуральный</h3><p>Классический светлый дуб</p></div>
+      </div>
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="standart-kashemir-fasad.png" alt="Стандарт Кашемир фасад">
+          <img class="img-render" src="standart-kashemir-render.jpg" alt="Стандарт Кашемир кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Стандарт — Кашемир</h3><p>Нежный нейтральный оттенок</p></div>
+      </div>
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="standart-sero-zelenyy-fasad.png" alt="Стандарт Серо-зелёный фасад">
+          <img class="img-render" src="standart-sero-zelenyy-render.jpg" alt="Стандарт Серо-зелёный кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Стандарт — Серо-зелёный</h3><p>Современный природный оттенок</p></div>
+      </div>
+      <div class="card">
+        <div class="card-images">
+          <img class="img-fasad" src="standart-svetlo-seryy-fasad.png" alt="Стандарт Светло-серый фасад">
+          <img class="img-render" src="standart-svetlo-seryy-render.jpg" alt="Стандарт Светло-серый кухня">
+          <span class="card-label">наведи — увидишь кухню</span>
+        </div>
+        <div class="card-info"><h3>Стандарт — Светло-серый</h3><p>Универсальный нейтральный цвет</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADVANTAGES -->
+<section class="advantages" id="advantages">
+  <h2 class="section-title">НАШИ <span>ПРЕИМУЩЕСТВА</span></h2>
+  <div class="divider"></div>
+  <div class="adv-grid">
+    <div class="adv-item">
+      <div class="adv-icon">🏭</div>
+      <h3>Собственное производство</h3>
+      <p>Изготавливаем кухни на собственном оборудовании — без посредников</p>
+    </div>
+    <div class="adv-item">
+      <div class="adv-icon">📐</div>
+      <h3>Замер бесплатно</h3>
+      <p>Выезжаем на замер в любой день — бесплатно и без обязательств</p>
+    </div>
+    <div class="adv-item">
+      <div class="adv-icon">⏱️</div>
+      <h3>Срок от 14 дней</h3>
+      <p>Изготовим и установим кухню в кратчайшие сроки</p>
+    </div>
+    <div class="adv-item">
+      <div class="adv-icon">🛡️</div>
+      <h3>Гарантия 3 года</h3>
+      <p>Даём гарантию на все изделия и монтажные работы</p>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATOR -->
+<section class="calculator" id="calculator">
+  <h2 class="section-title">РАССЧИТАТЬ <span>СТОИМОСТЬ</span></h2>
+  <div class="divider"></div>
+  <p class="section-sub">Оставьте заявку — перезвоним и рассчитаем стоимость бесплатно</p>
+  <form class="calc-form" onsubmit="return false;">
+    <div class="row">
+      <input type="text" placeholder="Ваше имя">
+      <input type="tel" placeholder="Номер телефона">
+    </div>
+    <select>
+      <option value="">Выберите серию</option>
+      <option>Лайн</option>
+      <option>Классика</option>
+      <option>Лофт</option>
+      <option>Стандарт</option>
+    </select>
+    <div class="row">
+      <input type="number" placeholder="Ширина кухни (см)">
+      <input type="number" placeholder="Высота потолка (см)">
+    </div>
+    <textarea rows="3" placeholder="Комментарий (необязательно)"></textarea>
+    <button class="btn-gold" style="border:none;cursor:pointer;">Отправить заявку</button>
+  </form>
+</section>
+
+<!-- CONTACTS -->
+<section class="contacts" id="contacts">
+  <h2 class="section-title">КОНТАКТЫ</h2>
+  <div class="divider"></div>
+  <div class="contacts-grid">
+    <div class="contact-item">
+      <h3>📞 Телефон</h3>
+      <p><a href="tel:+7XXXXXXXXXX" style="color:#444;text-decoration:none;">+7 (XXX) XXX-XX-XX</a></p>
+    </div>
+    <div class="contact-item">
+      <h3>📍 Адрес</h3>
+      <p>г. Город, ул. Улица, д. XX</p>
+    </div>
+    <div class="contact-item">
+      <h3>🕐 Режим работы</h3>
+      <p>Пн–Сб: 9:00 – 19:00<br>Вс: выходной</p>
+    </div>
+    <div class="contact-item">
+      <h3>💬 WhatsApp</h3>
+      <p><a href="https://wa.me/7XXXXXXXXXX" style="color:#25D366;text-decoration:none;">Написать в WhatsApp</a></p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2024 <span>ONYX KITCHEN</span> — Кухни на заказ. Все права защищены.</p>
+</footer>
+
+<div class="float-btns">
+  <a href="https://wa.me/7XXXXXXXXXX" class="float-btn float-wa" title="WhatsApp">💬</a>
+  <a href="tel:+7XXXXXXXXXX" class="float-btn float-call" title="Позвонить">📞</a>
+</div>
+
+<script>
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
