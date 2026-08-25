@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONEON KITCHEN — Кухни на заказ</title>
+<style>
+  :root {
+    --cream: #f9f6f1;
+    --white: #ffffff;
+    --dark: #1a1a1a;
+    --gray: #6b6b6b;
+    --light-gray: #e8e4de;
+    --accent: #8b6f47;
+    --font-serif: 'Georgia', 'Times New Roman', serif;
+    --font-sans: 'Helvetica Neue', Arial, sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:var(--font-sans); background:var(--white); color:var(--dark); line-height:1.6; }
+
+  /* ===== ШАПКА ===== */
+  header {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(255,255,255,0.97);
+    border-bottom:1px solid var(--light-gray);
+    padding:0 64px; height:72px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo {
+    font-family:var(--font-serif); font-size:22px;
+    letter-spacing:4px; color:var(--dark);
+    text-transform:uppercase; text-decoration:none;
+  }
+  nav { display:flex; gap:36px; align-items:center; }
+  nav a {
+    font-size:12px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--dark); text-decoration:none; transition:color .25s;
+  }
+  nav a:hover { color:var(--accent); }
+  .header-phone {
+    font-size:14px; color:var(--dark); text-decoration:none;
+    border-bottom:1px solid var(--light-gray); padding-bottom:2px;
+  }
+  .burger { display:none; flex-direction:column; gap:5px; cursor:pointer; }
+  .burger span { width:24px; height:1px; background:var(--dark); display:block; }
+  .mobile-nav {
+    display:none; position:fixed; top:72px; left:0; right:0;
+    background:var(--white); border-bottom:1px solid var(--light-gray);
+    padding:24px 32px; flex-direction:column; gap:20px; z-index:99;
+  }
+  .mobile-nav.open { display:flex; }
+  .mobile-nav a { font-size:15px; text-decoration:none; color:var(--dark); letter-spacing:1px; text-transform:uppercase; }
+
+  /* ===== ГЕРОЙ ===== */
+  .hero {
+    margin-top:72px; min-height:calc(100vh - 72px);
+    display:grid; grid-template-columns:1fr 1fr; align-items:center;
+  }
+  .hero-text { padding:80px 64px 80px 80px; }
+  .hero-eyebrow { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:24px; }
+  .hero-title {
+    font-family:var(--font-serif); font-size:clamp(36px,4vw,62px);
+    font-weight:normal; line-height:1.15; color:var(--dark); margin-bottom:28px;
+  }
+  .hero-title em { font-style:italic; color:var(--accent); }
+  .hero-sub { font-size:16px; color:var(--gray); line-height:1.8; max-width:440px; margin-bottom:48px; }
+  .hero-btns { display:flex; gap:16px; flex-wrap:wrap; }
+  .btn-primary {
+    padding:16px 40px; background:var(--dark); color:var(--white);
+    font-size:12px; letter-spacing:2px; text-transform:uppercase;
+    text-decoration:none; border:1px solid var(--dark); cursor:pointer; transition:all .25s; display:inline-block;
+  }
+  .btn-primary:hover { background:var(--accent); border-color:var(--accent); }
+  .btn-outline {
+    padding:16px 40px; background:transparent; color:var(--dark);
+    font-size:12px; letter-spacing:2px; text-transform:uppercase;
+    text-decoration:none; border:1px solid var(--dark); cursor:pointer; transition:all .25s; display:inline-block;
+  }
+  .btn-outline:hover { background:var(--dark); color:var(--white); }
+  .hero-image {
+    height:calc(100vh - 72px);
+    background:linear-gradient(135deg, #f0ebe3 0%, #e0d8cc 100%);
+    display:flex; align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+  }
+  .hero-img-placeholder { text-align:center; }
+  .hero-img-placeholder .big { font-size:96px; opacity:0.18; display:block; margin-bottom:12px; }
+  .hero-img-placeholder p { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); opacity:0.7; }
+  .hero-stats {
+    margin-top:56px; display:flex; gap:40px;
+    border-top:1px solid var(--light-gray); padding-top:32px;
+  }
+  .stat-num { font-family:var(--font-serif); font-size:30px; color:var(--dark); display:block; }
+  .stat-label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gray); }
+
+  /* ===== ОБЩИЕ СТИЛИ СЕКЦИЙ ===== */
+  section { padding:100px 80px; }
+  .section-label { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
+  .section-title { font-family:var(--font-serif); font-size:clamp(28px,3vw,44px); font-weight:normal; color:var(--dark); line-height:1.2; margin-bottom:20px; }
+  .section-sub { font-size:16px; color:var(--gray); max-width:520px; line-height:1.8; margin-bottom:60px; }
+  .divider { width:48px; height:1px; background:var(--accent); margin-bottom:48px; }
+
+  /* ===== ПРЕИМУЩЕСТВА ===== */
+  .advantages { background:var(--cream); }
+  .adv-grid { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--light-gray); }
+  .adv-card { padding:48px 36px; border-right:1px solid var(--light-gray); transition:background .25s; }
+  .adv-card:last-child { border-right:none; }
+  .adv-card:hover { background:rgba(139,111,71,0.06); }
+  .adv-icon { font-size:28px; margin-bottom:20px; display:block; }
+  .adv-title { font-family:var(--font-serif); font-size:18px; font-weight:normal; margin-bottom:10px; }
+  .adv-text { font-size:14px; color:var(--gray); line-height:1.7; }
+
+  /* ===== КАТАЛОГ ===== */
+  .catalog-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:56px; }
+  .catalog-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--light-gray); }
+  .kitchen-card { background:var(--white); overflow:hidden; transition:transform .3s; cursor:pointer; }
+  .kitchen-card:hover { transform:translateY(-4px); }
+  .k-img { height:280px; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .k1 { background:linear-gradient(135deg,#e8e0d5,#d4c9bb); }
+  .k2 { background:linear-gradient(135deg,#d5dde8,#bbc4d4); }
+  .k3 { background:linear-gradient(135deg,#e8e5d5,#d4d0bb); }
+  .k4 { background:linear-gradient(135deg,#e0d5d5,#c8b8b8); }
+  .k5 { background:linear-gradient(135deg,#d5e8d5,#bbd4bb); }
+  .k6 { background:linear-gradient(135deg,#e5d5e8,#d0bbd4); }
+  .k-ph { font-family:var(--font-serif); font-size:56px; color:rgba(255,255,255,0.45); }
+  .k-badge { position:absolute; top:20px; left:20px; font-size:10px; letter-spacing:2px; text-transform:uppercase; padding:5px 14px; background:var(--dark); color:var(--white); }
+  .k-badge.gold { background:var(--accent); }
+  .k-info { padding:28px 28px 32px; }
+  .k-name { font-family:var(--font-serif); font-size:20px; font-weight:normal; margin-bottom:6px; }
+  .k-desc { font-size:13px; color:var(--gray); margin-bottom:20px; line-height:1.6; }
+  .k-footer { display:flex; justify-content:space-between; align-items:center; }
+  .k-price { font-size:17px; color:var(--dark); }
+  .k-price span { font-size:12px; color:var(--gray); display:block; }
+  .k-link { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent); padding-bottom:2px; }
+  .k-link:hover { opacity:0.6; }
+
+  /* ===== КАК РАБОТАЕМ ===== */
+  .process { background:var(--dark); }
+  .process .section-label { color:var(--accent); }
+  .process .section-title { color:var(--white); }
+  .process .section-sub { color:rgba(255,255,255,0.45); }
+  .steps { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid rgba(255,255,255,0.1); }
+  .step { padding:48px 40px 48px 0; border-right:1px solid rgba(255,255,255,0.1); }
+  .step:first-child { padding-left:0; }
+  .step:last-child { border-right:none; padding-right:0; }
+  .step-num { font-family:var(--font-serif); font-size:52px; color:rgba(255,255,255,0.08); line-height:1; margin-bottom:20px; }
+  .step-title { font-family:var(--font-serif); font-size:18px; font-weight:normal; color:var(--white); margin-bottom:10px; }
+  .step-text { font-size:14px; color:rgba(255,255,255,0.45); line-height:1.7; }
+
+  /* ===== КАЛЬКУЛЯТОР ===== */
+  .calculator { background:var(--cream); }
+  .calc-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+  .form-group { margin-bottom:32px; }
+  .form-label { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--gray); display:block; margin-bottom:10px; }
+  .form-range { width:100%; accent-color:var(--accent); cursor:pointer; }
+  .range-value { font-family:var(--font-serif); font-size:26px; color:var(--dark); margin-bottom:8px; display:block; }
+  .form-select, .form-input {
+    width:100%; padding:14px 16px; border:1px solid var(--light-gray);
+    background:var(--white); font-size:14px; font-family:var(--font-sans);
+    color:var(--dark); outline:none; transition:border-color .2s; appearance:none;
+  }
+  .form-select:focus, .form-input:focus { border-color:var(--accent); }
+  .checkbox-group { display:flex; flex-direction:column; gap:12px; }
+  .checkbox-item { display:flex; align-items:center; gap:12px; cursor:pointer; font-size:14px; color:var(--dark); }
+  .checkbox-item input { accent-color:var(--accent); width:16px; height:16px; flex-shrink:0; }
+  .calc-result { position:sticky; top:100px; background:var(--white); padding:48px; border:1px solid var(--light-gray); }
+  .result-label { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--gray); margin-bottom:8px; }
+  .result-price { font-family:var(--font-serif); font-size:48px; color:var(--dark); margin-bottom:8px; }
+  .result-note { font-size:13px; color:var(--gray); margin-bottom:36px; line-height:1.7; }
+  .result-items { margin-bottom:36px; }
+  .result-row { display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--light-gray); font-size:14px; color:var(--gray); }
+  .result-row b { color:var(--dark); }
+
+  /* ===== ОТЗЫВЫ ===== */
+  .reviews-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--light-gray); margin-top:60px; }
+  .review-card { background:var(--white); padding:48px 40px; }
+  .stars { color:var(--accent); font-size:14px; letter-spacing:3px; margin-bottom:24px; }
+  .review-text { font-family:var(--font-serif); font-size:17px; font-weight:normal; line-height:1.75; color:var(--dark); margin-bottom:32px; font-style:italic; }
+  .reviewer { display:flex; align-items:center; gap:16px; }
+  .reviewer-avatar { width:44px; height:44px; border-radius:50%; background:var(--cream); display:flex; align-items:center; justify-content:center; font-family:var(--font-serif); font-size:18px; color:var(--accent); }
+  .reviewer-name { font-size:14px; font-weight:bold; }
+  .reviewer-city { font-size:12px; color:var(--gray); }
+
+  /* ===== FAQ ===== */
+  .faq { background:var(--white); }
+  .faq-list { max-width:760px; }
+  .faq-item { border-bottom:1px solid var(--light-gray); }
+  .faq-question {
+    width:100%; background:none; border:none; text-align:left;
+    padding:28px 0; font-size:16px; font-family:var(--font-sans);
+    color:var(--dark); cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:20px;
+  }
+  .faq-question:hover { color:var(--accent); }
+  .faq-arrow { font-size:20px; transition:transform .3s; color:var(--accent); flex-shrink:0; }
+  .faq-answer { display:none; padding-bottom:28px; font-size:15px; color:var(--gray); line-height:1.8; max-width:640px; }
+  .faq-item.open .faq-answer { display:block; }
+  .faq-item.open .faq-arrow { transform:rotate(45deg); }
+
+  /* ===== ФОРМА ===== */
+  .contact { background:var(--dark); }
+  .contact .section-label { color:var(--accent); }
+  .contact .section-title { color:var(--white); }
+  .contact .section-sub { color:rgba(255,255,255,0.45); }
+  .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+  .contact-detail { padding:28px 0; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .contact-detail:first-child { border-top:1px solid rgba(255,255,255,0.1); }
+  .cd-label { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:8px; }
+  .cd-value { font-family:var(--font-serif); font-size:18px; color:var(--white); }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+  .contact-input {
+    width:100%; padding:16px; background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12); color:var(--white);
+    font-size:14px; font-family:var(--font-sans); outline:none; transition:border-color .2s; margin-bottom:0;
+  }
+  .contact-input::placeholder { color:rgba(255,255,255,0.3); }
+  .contact-input:focus { border-color:var(--accent); }
+  textarea.contact-input { resize:vertical; min-height:120px; }
+  .form-success { display:none; text-align:center; padding:48px; color:var(--white); }
+  .form-success .check { font-size:52px; margin-bottom:16px; }
+  .form-success h3 { font-family:var(--font-serif); font-size:24px; font-weight:normal; margin-bottom:8px; }
+  .form-success p { color:rgba(255,255,255,0.5); }
+
+  /* ===== ПОДВАЛ ===== */
+  footer { background:#111; padding:64px 80px; color:rgba(255,255,255,0.4); }
+  .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:48px; margin-bottom:48px; padding-bottom:48px; border-bottom:1px solid rgba(255,255,255,0.08); }
+  .footer-logo { font-family:var(--font-serif); font-size:20px; letter-spacing:4px; color:var(--white); text-transform:uppercase; text-decoration:none; display:block; margin-bottom:14px; }
+  .footer-tagline { font-size:14px; line-height:1.7; max-width:220px; }
+  .footer-heading { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.55); margin-bottom:20px; }
+  .footer-links { display:flex; flex-direction:column; gap:12px; }
+  .footer-links a { font-size:14px; color:rgba(255,255,255,0.4); text-decoration:none; transition:color .2s; }
+  .footer-links a:hover { color:var(--white); }
+  .footer-bottom { display:flex; justify-content:space-between; align-items:center; font-size:13px; }
+
+  /* ===== АДАПТИВ ===== */
+  @media(max-width:1100px) {
+    section { padding:80px 48px; }
+    header { padding:0 32px; }
+    footer { padding:48px 48px; }
+    .hero-text { padding:60px 40px; }
+    .adv-grid { grid-template-columns:repeat(2,1fr); }
+    .adv-card:nth-child(2) { border-right:none; }
+    .adv-card { border-bottom:1px solid var(--light-gray); }
+    .catalog-grid { grid-template-columns:repeat(2,1fr); }
+    .steps { grid-template-columns:repeat(2,1fr); }
+    .step { border-bottom:1px solid rgba(255,255,255,0.08); padding:40px 32px 40px 0; }
+    .footer-grid { grid-template-columns:1fr 1fr; }
+  }
+  @media(max-width:768px) {
+    header { padding:0 20px; }
+    nav,.header-phone { display:none; }
+    .burger { display:flex; }
+    .hero { grid-template-columns:1fr; }
+    .hero-image { height:300px; }
+    .hero-text { padding:48px 24px; }
+    .hero-stats { gap:24px; }
+    section { padding:64px 24px; }
+    footer { padding:48px 24px; }
+    .adv-grid,.catalog-grid,.reviews-grid { grid-template-columns:1fr; }
+    .adv-card { border-right:none; }
+    .catalog-header { flex-direction:column; align-items:flex-start; gap:20px; }
+    .steps { grid-template-columns:1fr; }
+    .step { border-right:none; padding:32px 0; }
+    .calc-grid,.contact-grid { grid-template-columns:1fr; gap:40px; }
+    .form-row { grid-template-columns:1fr; }
+    .footer-grid { grid-template-columns:1fr; }
+    .footer-bottom { flex-direction:column; gap:10px; text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== ШАПКА ========== -->
+<header>
+  <a href="#" class="logo">Oneon&nbsp;Kitchen</a>
+  <nav>
+    <a href="#catalog">Коллекции</a>
+    <a href="#process">Процесс</a>
+    <a href="#calculator">Стоимость</a>
+    <a href="#reviews">Отзывы</a>
+    <a href="#contact">Контакты</a>
+  </nav>
+  <a href="tel:+79990000000" class="header-phone">+7 (999) 000-00-00</a>
+  <div class="burger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</header>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="#catalog" onclick="toggleMenu()">Коллекции</a>
+  <a href="#process" onclick="toggleMenu()">Процесс</a>
+  <a href="#calculator" onclick="toggleMenu()">Стоимость</a>
+  <a href="#reviews" onclick="toggleMenu()">Отзывы</a>
+  <a href="#contact" onclick="toggleMenu()">Контакты</a>
+  <a href="tel:+79990000000">+7 (999) 000-00-00</a>
+</div>
+
+<!-- ========== ГЕРОЙ ========== -->
+<div class="hero">
+  <div class="hero-text">
+    <p class="hero-eyebrow">Кухни на заказ — Москва</p>
+    <h1 class="hero-title">Кухня, которую<br>вы <em>представляли</em></h1>
+    <p class="hero-sub">Проектируем и производим кухонные гарнитуры по вашим меркам. Собственное производство, авторские фасады, установка под ключ.</p>
+    <div class="hero-btns">
+      <a href="#catalog" class="btn-primary">Смотреть коллекции</a>
+      <a href="#contact" class="btn-outline">Рассчитать стоимость</a>
+    </div>
+    <div class="hero-stats">
+      <div><span class="stat-num">10</span><span class="stat-label">лет на рынке</span></div>
+      <div><span class="stat-num">2 400</span><span class="stat-label">кухонь сдано</span></div>
+      <div><span class="stat-num">5 лет</span><span class="stat-label">гарантия</span></div>
+    </div>
+  </div>
+  <div class="hero-image">
+    <div class="hero-img-placeholder">
+      <span class="big">🍳</span>
+      <p>Вставьте фото кухни</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== ПРЕИМУЩЕСТВА ========== -->
+<section class="advantages" id="advantages">
+  <p class="section-label">Почему выбирают нас</p>
+  <h2 class="section-title">Качество в каждой детали</h2>
+  <div class="divider"></div>
+  <div class="adv-grid">
+    <div class="adv-card">
+      <span class="adv-icon">🏭</span>
+      <h3 class="adv-title">Своё производство</h3>
+      <p class="adv-text">Контролируем каждый этап — от раскроя материала до финальной сборки. Никаких посредников.</p>
+    </div>
+    <div class="adv-card">
+      <span class="adv-icon">📐</span>
+      <h3 class="adv-title">Точный замер</h3>
+      <p class="adv-text">Выезжаем на замер в течение 24 часов. Учитываем все особенности вашего пространства.</p>
+    </div>
+    <div class="adv-card">
+      <span class="adv-icon">🚚</span>
+      <h3 class="adv-title">Доставка и монтаж</h3>
+      <p class="adv-text">Доставляем по Москве и МО. Монтажная бригада — профессионалы с опытом от 7 лет.</p>
+    </div>
+    <div class="adv-card">
+      <span class="adv-icon">🛡</span>
+      <h3 class="adv-title">Гарантия 5 лет</h3>
+      <p class="adv-text">Официальная гарантия на всю мебель и фурнитуру. Приедем и устраним любой дефект бесплатно.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== КАТАЛОГ ========== -->
+<section id="catalog">
+  <div class="catalog-header">
+    <div>
+      <p class="section-label">Наши коллекции</p>
+      <h2 class="section-title">Модели кухонь</h2>
+    </div>
+    <a href="#contact" class="btn-outline">Заказать каталог</a>
+  </div>
+  <div class="catalog-grid">
+    <!-- КАРТОЧКА 1 -->
+    <div class="kitchen-card">
+      <div class="k-img k1"><span class="k-ph">◻</span><span class="k-badge gold">Хит</span></div>
+      <div class="k-info">
+        <h3 class="k-name">Milano</h3>
+        <p class="k-desc">Матовые фасады, встроенные ручки, столешница под камень</p>
+        <div class="k-footer">
+          <div class="k-price">от 180 000 ₽<span>за погонный метр</span></div>
+          <a href="#contact" class="k-link">Подробнее</a>
+        </div>
+      </div>
+    </div>
+    <!-- КАРТОЧКА 2 -->
+    <div class="kitchen-card">
+      <div class="k-img k2"><span class="k-ph">◻</span><span class="k-badge">Новинка</span></div>
+      <div class="k-info">
+        <h3 class="k-name">Nordic</h3>
+        <p class="k-desc">Скандинавский минимализм, светлые тона, дерево и белый</p>
+        <div class="k-footer">
+          <div class="k-price">от 155 000 ₽<span>за погонный метр</span></div>
+          <a href="#contact" class="k-link">Подробнее</a>
+        </div>
+      </div>
+    </div>
+    <!-- КАРТОЧКА 3 -->
+    <div class="kitchen-card">
+      <div class="k-img k3"><span class="k-ph">◻</span><span class="k-badge gold">Premium</span></div>
+      <div class="k-info">
+        <h3 class="k-name">Palazzo</h3>
+        <p class="k-desc">Классика с патиной, фрезерованные фасады, золотые ручки</p>
+        <div class="k-footer">
+          <div class="k-price">от 240 000 ₽<span>за погонный метр</span></div>
+          <a href="#contact" class="k-link">Подробнее</a>
+        </div>
+      </div>
+    </div>
+    <!-- КАРТОЧКА 4 -->
+    <div class="kitchen-card">
+      <div class="k-img k4"><span class="k-ph">◻</span></div>
+      <div class="k-info">
+        <h3 class="k-name">Loft</h3>
+        <p class="k-desc">Индустриальный стиль, металлические акценты, тёмные тона</p>
+        <div class="k-footer">
+          <div class="k-price">от 165 000 ₽<span>за погонный метр</span></div>
+          <a href="#contact" class="k-link">Подробнее</a>
+        </div>
+      </div>
+    </div>
+    <!-- КАРТОЧКА 5 -->
+    <div class="kitchen-card">
+      <div class="k-img k5"><span class="k-ph">◻</span></div>
+      <div class="k-info">
+        <h3 class="k-name">Nature</h3>
+        <p class="k-desc">Экологичные материалы, натуральный шпон, мягкие линии</p>
+        <div class="k-footer">
+          <div class="k-price">от 195 000 ₽<span>за погонный метр</span></div>
+          <a href="#contact" class="k-link">Подробнее</a>
+        </div>
+      </div>
+    </div>
+    <!-- КАРТОЧКА 6 -->
+    <div class="kitchen-card">
+      <div class="k-img k6"><span class="k-ph">◻</span><span class="k-badge gold">Premium</span></div>
+      <div class="k-info">
+        <h3 class="k-name">Velvet</h3>
+        <p class="k-desc">Бархатный лак, скрытые петли, интегрированная подсветка</p>
+        <div class="k-footer">
+          <div class="k-price">от 280 000 ₽<span>за погонный метр</span></div>
+          <a href="#contact" class="k-link">Подробнее</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== КАК РАБОТАЕМ ========== -->
+<section class="process" id="process">
+  <p class="section-label">Наш подход</p>
+  <h2 class="section-title">Как мы работаем</h2>
+  <p class="section-sub">От первого звонка до готовой кухни — прозрачный процесс без сюрпризов.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3 class="step-title">Консультация</h3>
+      <p class="step-text">Обсуждаем ваши пожелания, стиль и бюджет. Бесплатно, без обязательств.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3 class="step-title">Замер и проект</h3>
+      <p class="step-text">Выезжаем на замер, создаём 3D-визуализацию и утверждаем проект.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3 class="step-title">Производство</h3>
+      <p class="step-text">Изготавливаем на собственном производстве. Срок — от 25 рабочих дней.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h3 class="step-title">Монтаж</h3>
+      <p class="step-text">Доставляем и устанавливаем под ключ. Вы принимаете готовую кухню.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== КАЛЬКУЛЯТОР ========== -->
+<section class="calculator" id="calculator">
+  <p class="section-label">Предварительный расчёт</p>
+  <h2 class="section-title">Сколько стоит ваша кухня?</h2>
+  <p class="section-sub">Укажите параметры — получите ориентировочную стоимость прямо сейчас.</p>
+  <div class="calc-grid">
+    <div class="calc-form">
+      <div class="form-group">
+        <span class="range-value" id="lengthVal">3,0 м</span>
+        <label class="form-label">Длина кухни</label>
+        <input type="range" class="form-range" id="lengthRange" min="1" max="6" step="0.5" value="3" oninput="calcPrice()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Материал фасадов</label>
+        <select class="form-select" id="facade" onchange="calcPrice()">
+          <option value="1">Плёнка ПВХ — базовый</option>
+          <option value="1.4" selected>Эмаль матовая — стандарт</option>
+          <option value="1.8">Шпон натуральный — премиум</option>
+          <option value="2.3">Лак бархатный — люкс</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Столешница</label>
+        <select class="form-select" id="tableTop" onchange="calcPrice()">
+          <option value="0">ЛДСП — включена</option>
+          <option value="15000">Постформинг  +15 000 ₽</option>
+          <option value="35000">Искусственный камень  +35 000 ₽</option>
+          <option value="75000">Натуральный мрамор  +75 000 ₽</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Дополнительно</label>
+        <div class="checkbox-group">
+          <label class="checkbox-item"><input type="checkbox" value="18000" onchange="calcPrice()"> Встроенная подсветка +18 000 ₽</label>
+          <label class="checkbox-item"><input type="checkbox" value="12000" onchange="calcPrice()"> Доводчики Blum +12 000 ₽</label>
+          <label class="checkbox-item"><input type="checkbox" value="8000"  onchange="calcPrice()"> Выдвижные ящики +8 000 ₽</label>
+          <label class="checkbox-item"><input type="checkbox" value="24000" onchange="calcPrice()"> Монтаж под ключ +24 000 ₽</label>
+        </div>
+      </div>
+    </div>
+    <div class="calc-result">
+      <p class="result-label">Ориентировочная стоимость</p>
+      <p class="result-price" id="resultPrice">378 000 ₽</p>
+      <p class="result-note">Точная цена — после бесплатного выезда замерщика. Обычно отличается не более чем на 5%.</p>
+      <div class="result-items" id="resultItems"></div>
+      <a href="#contact" class="btn-primary" style="width:100%;text-align:center;display:block;">Оставить заявку</a>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ОТЗЫВЫ ========== -->
+<section id="reviews">
+  <p class="section-label">Что говорят клиенты</p>
+  <h2 class="section-title">Отзывы</h2>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">«Заказывали кухню Milano. Всё сделали точно в срок, качество превзошло ожидания. Особенно понравилась работа замерщика — учёл каждую мелочь.»</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">А</div>
+        <div><div class="reviewer-name">Анна Ковалёва</div><div class="reviewer-city">Москва, ЖК «Символ»</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">«Брали Palazzo для большой кухни 5 метров. Фасады с патиной — просто шедевр. Соседи уже спрашивают контакты. Спасибо команде!»</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">М</div>
+        <div><div class="reviewer-name">Михаил Дронов</div><div class="reviewer-city">Москва, Рублёво</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">«Долго выбирали — остановились на Nordic. Очень довольны: светло, просторно, функционально. Монтаж прошёл без единой царапины на полу.»</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">Е</div>
+        <div><div class="reviewer-name">Екатерина Смирнова</div><div class="reviewer-city">Подольск</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FAQ ========== -->
+<section class="faq" id="faq">
+  <p class="section-label">Вопросы и ответы</p>
+  <h2 class="section-title">Часто спрашивают</h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">Сколько времени занимает изготовление?<span class="faq-arrow">+</span></button>
+      <div class="faq-answer">Стандартный срок производства — 25–35 рабочих дней с момента подписания договора. Для коллекций Premium — до 45 дней из-за особых материалов.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">Есть ли возможность рассрочки?<span class="faq-arrow">+</span></button>
+      <div class="faq-answer">Да. Работаем по схеме 50/50: 50% предоплата при заключении договора, 50% — после монтажа. Также доступна рассрочка от 6 до 24 месяцев без переплаты.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">Делаете ли вы нестандартные размеры?<span class="faq-arrow">+</span></button>
+      <div class="faq-answer">Да, это наш основной профиль. Мы производим кухни любых конфигураций: угловые, Г-образные, П-образные, с островом, под скошенные потолки и ниши.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">Что входит в гарантию?<span class="faq-arrow">+</span></button>
+      <div class="faq-answer">Гарантия 5 лет на корпус, фасады и фурнитуру. При любом дефекте по нашей вине бесплатно выезжаем и устраняем проблему в течение 10 рабочих дней.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">Можно ли приехать посмотреть образцы?<span class="faq-arrow">+</span></button>
+      <div class="faq-answer">Конечно! Наш шоурум работает ежедневно с 10:00 до 20:00. Пощупайте образцы фасадов и столешниц, обсудите проект с дизайнером. Запись необязательна.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ФОРМА ========== -->
+<section class="contact" id="contact">
+  <p class="section-label">Обсудим вашу кухню</p>
+  <h2 class="section-title">Оставить заявку</h2>
+  <p class="section-sub">Ответим в течение 15 минут в рабочее время. Консультация и выезд замерщика — бесплатно.</p>
+  <div class="contact-grid">
+    <div>
+      <div class="contact-detail"><div class="cd-label">Телефон</div><div class="cd-value">+7 (999) 000-00-00</div></div>
+      <div class="contact-detail"><div class="cd-label">Email</div><div class="cd-value">info@oneonkitchen.ru</div></div>
+      <div class="contact-detail"><div class="cd-label">Шоурум</div><div class="cd-value">г. Москва, ул. Примерная, 1</div></div>
+      <div class="contact-detail"><div class="cd-label">Часы работы</div><div class="cd-value">Пн–Вс, 10:00–20:00</div></div>
+    </div>
+    <div>
+      <div id="contactForm">
+        <div class="form-row">
+          <input type="text" class="contact-input" placeholder="Ваше имя">
+          <input type="tel" class="contact-input" id="phone" placeholder="+7 (___) ___-__-__">
+        </div>
+        <select class="contact-input" style="appearance:none;margin-bottom:16px">
+          <option value="">Тема обращения</option>
+          <option>Заказ кухни</option>
+          <option>Расчёт стоимости</option>
+          <option>Запись в шоурум</option>
+          <option>Другое</option>
+        </select>
+        <textarea class="contact-input" style="margin-bottom:16px" placeholder="Расскажите о вашем проекте..."></textarea>
+        <button class="btn-primary" style="width:100%;text-align:center;border:none;cursor:pointer;font-family:inherit" onclick="submitForm()">Отправить заявку</button>
+      </div>
+      <div class="form-success" id="formSuccess">
+        <div class="check">✓</div>
+        <h3>Заявка отправлена!</h3>
+        <p>Мы свяжемся с вами в течение 15 минут</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ПОДВАЛ ========== -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a href="#" class="footer-logo">Oneon Kitchen</a>
+      <p class="footer-tagline">Кухни на заказ. Собственное производство. Работаем с 2014 года.</p>
+    </div>
+    <div>
+      <p class="footer-heading">Коллекции</p>
+      <div class="footer-links">
+        <a href="#catalog">Milano</a><a href="#catalog">Nordic</a>
+        <a href="#catalog">Palazzo</a><a href="#catalog">Loft</a>
+        <a href="#catalog">Nature</a><a href="#catalog">Velvet</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-heading">Компания</p>
+      <div class="footer-links">
+        <a href="#advantages">О нас</a><a href="#process">Как работаем</a>
+        <a href="#reviews">Отзывы</a><a href="#faq">FAQ</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-heading">Контакты</p>
+      <div class="footer-links">
+        <a href="tel:+79990000000">+7 (999) 000-00-00</a>
+        <a href="mailto:info@oneonkitchen.ru">info@oneonkitchen.ru</a>
+        <a href="#">Пн–Вс, 10:00–20:00</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Oneon Kitchen. Все права защищены.</span>
+    <span>Политика конфиденциальности</span>
+  </div>
+</footer>
+
+<script>
+// === БУРГЕР ===
+function toggleMenu() {
+  document.getElementById('mobileNav').classList.toggle('open');
+}
+
+// === МАСКА ТЕЛЕФОНА ===
+document.getElementById('phone').addEventListener('input', function(e) {
+  let v = e.target.value.replace(/\D/g,'');
+  if (v.startsWith('8')) v = '7' + v.slice(1);
+  if (!v.startsWith('7')) v = '7' + v;
+  let f = '+7';
+  if (v.length > 1) f += ' (' + v.slice(1,4);
+  if (v.length >= 4) f += ') ' + v.slice(4,7);
+  if (v.length >= 7) f += '-' + v.slice(7,9);
+  if (v.length >= 9) f += '-' + v.slice(9,11);
+  e.target.value = f;
+});
+
+// === КАЛЬКУЛЯТОР ===
+function calcPrice() {
+  const len    = parseFloat(document.getElementById('lengthRange').value);
+  const facade = parseFloat(document.getElementById('facade').value);
+  const tableX = parseInt(document.getElementById('tableTop').value);
+  document.getElementById('lengthVal').textContent = len.toFixed(1).replace('.',',') + ' м';
+  const base = Math.round(90000 * len * facade);
+  let extras = 0;
+  document.querySelectorAll('.checkbox-item input:checked').forEach(cb => { extras += parseInt(cb.value); });
+  const total = base + tableX + extras;
+  document.getElementById('resultPrice').textContent = total.toLocaleString('ru-RU') + ' ₽';
+  document.getElementById('resultItems').innerHTML =
+    `<div class="result-row"><span>Корпус + фасады (${len} м)</span><b>${base.toLocaleString('ru-RU')} ₽</b></div>
+     <div class="result-row"><span>Столешница</span><b>${tableX > 0 ? '+' + tableX.toLocaleString('ru-RU') + ' ₽' : 'включена'}</b></div>
+     <div class="result-row"><span>Дополнения</span><b>${extras > 0 ? '+' + extras.toLocaleString('ru-RU') + ' ₽' : '—'}</b></div>
+     <div class="result-row" style="font-weight:bold;color:var(--dark)"><span>Итого</span><b>${total.toLocaleString('ru-RU')} ₽</b></div>`;
+}
+calcPrice();
+
+// === FAQ ===
+function toggleFaq(btn) {
+  const item = btn.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// === ФОРМА ===
+function submitForm() {
+  document.getElementById('contactForm').style.display = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
+}
+</script>
+</body>
+</html>
